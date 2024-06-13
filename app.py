@@ -6,6 +6,7 @@ import settings
 
 #features
 from features.post import *
+from features.postUpgraded import *
 
 def run():
     intents = discord.Intents.all()
@@ -32,6 +33,7 @@ def run():
 ################################             
     bot.add_command(write)
     bot.add_command(send)
+    bot.add_command(send_second_version)
    # bot.add_command(check_mayssages)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
