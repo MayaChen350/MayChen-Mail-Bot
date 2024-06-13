@@ -18,14 +18,55 @@ class Mayssage_Box_Menu(View):
 
     page_index = 0
     def update_button(self):
-        self.children[0].disabled = self.page_index == 0
-        self.children[1].disabled = self.page_index + 1 == len(self.mayssage_box_pages)
+        self.children[1].disabled = len(self.mayssage_box_pages[self.page_index]) < 2
+        self.children[2].disabled = len(self.mayssage_box_pages[self.page_index]) < 3
+        self.children[3].disabled = self.page_index == 0
+        self.children[4].disabled = self.page_index + 1 == len(self.mayssage_box_pages)
 
     async def update_embed(self, interaction : discord.Interaction):
         set_mayssage_box_embed(self.embed, self.context, self.mayssage_box_pages, self.mayssage_box_dir, self.page_index)
         orig_footer = self.embed.footer.text
         self.embed.set_footer(text= "Page " + str(self.page_index + 1) + "/" + str(len(self.mayssage_box_pages)) + "\n" + orig_footer)
         await interaction.response.edit_message(embed=self.embed, view=self)
+
+    async def read_mayssage(self, interaction : discord.Interaction, mayssageid : int):
+        mayssage_file_name = self.mayssage_box_dir + "/" + str(mayssageid)
+        mayssage_file = open(mayssage_file_name, "r")
+
+        title = mayssage_file.readline()
+        mayssage_content = mayssage_file.read()
+
+        mayssage_file.close()
+
+        mayssage_length = len(mayssage_content)
+        mayssage_pages = list()
+        mayssage_index = 0
+
+        while mayssage_length > 1000:
+            mayssage_pages.append(mayssage_content[mayssage_index:mayssage_index + 1000])
+            mayssage_index += 1000
+            mayssage_length -= 1000
+
+        mayssage_pages.append(mayssage_content[mayssage_index:-1])
+
+        new_embed = discord.Embed(title=title, description = mayssage_pages[0])
+        new_embed.set_footer(text= "1/" + str(len(mayssage_pages)))
+        embed_menu = Mayssage_Menu(title, mayssage_pages, mayssage_file_name)
+        await interaction.response.edit_message(embed=new_embed,view=embed_menu)
+
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary,label="1")
+    async def first(self, interaction : discord.Interaction, button : Button):
+        await self.read_mayssage(interaction, self.mayssage_box_pages[self.page_index][0])
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary,label="2")
+    async def second(self, interaction : discord.Interaction, button : Button):
+        await self.read_mayssage(interaction, self.mayssage_box_pages[self.page_index][1])
+
+    @discord.ui.button(style=discord.ButtonStyle.secondary,label="3")
+    async def third(self, interaction : discord.Interaction, button : Button):
+        await self.read_mayssage(interaction, self.mayssage_box_pages[self.page_index][2])
+
 
     @discord.ui.button(style=discord.ButtonStyle.blurple,label="Prev")
     async def prev(self, interaction : discord.Interaction, button : Button):
@@ -56,7 +97,6 @@ class Mayssage_Menu(View):
         async def update_embed(self, interaction : discord.Interaction):
             embed = discord.Embed(title=self.title, description=self.messages[self.page_index])
             embed.clear_fields()
-            #embed.add_field(name=self.title, value=self.messages[self.page_index])
             embed.set_footer(text= str(self.page_index + 1) + "/" + str(len(self.messages)))
             await interaction.response.edit_message(embed=embed, view=self)
 
@@ -103,7 +143,7 @@ def set_mayssage_box_embed(embed, ctx, mayssage_box_pages, mayssage_box_dir : st
         file.close()
 
 @commands.hybrid_command(description="Check your Mayssages.")
-async def check_mayssages(ctx, mayssageid : int = commands.parameter(description="The ID of the Mayssage you want to read")):
+async def check_mayssages(ctx):
     mayssage_box_dir = "data/" + str(ctx.author.id)
 
     list_dir = os.listdir(mayssage_box_dir)
@@ -119,35 +159,4 @@ async def check_mayssages(ctx, mayssageid : int = commands.parameter(description
     mayssage_box_embed.set_footer(text= "Page 1/" + str(len(mayssage_box_pages)) + "\n" + orig_footer)
 
     mayssage_box_embed_menu = Mayssage_Box_Menu(mayssage_box_embed, ctx, mayssage_box_pages,  mayssage_box_dir)
-
-    #mayssage_box_embed.set_footer(text="MayaChen Mail")
-    #mayssage_box_embed.set_author(name=ctx.author.display_name + "'s Mayssage box")
-
-    #for mayssageid in mayssage_box_pages[0]:
-     #   file = open(mayssage_box + "/" + mayssageid, "r")
-      #  mayssage_box_embed.add_field(name=file.readline(), value=(file.readline() + " \- <t:" + file.readline() + ":R>").replace("\n", "")) # In order: Title, author, relative date
-       # file.close()
-
-    mayssage_file_name = "data/" + str(ctx.author.id) + "/" + str(mayssageid)
-    mayssage_file = open(mayssage_file_name, "r")
-    title = mayssage_file.readline()
-
-    mayssage_content = mayssage_file.read()
-    mayssage_file.close()
-
-    mayssage_length = len(mayssage_content)
-    mayssage_pages = list()
-    mayssage_index = 0
-
-    while mayssage_length > 1000:
-        mayssage_pages.append(mayssage_content[mayssage_index:mayssage_index + 1000])
-        mayssage_index += 1000
-        mayssage_length -= 1000
-
-    mayssage_pages.append(mayssage_content[mayssage_index:-1])
-
-    #embed = discord.Embed(title=title, description = mayssage_pages[0])
-    ##embed.add_field(name=title, value=mayssage_pages[0])
-    #embed.set_footer(text= "1/" + str(len(mayssage_pages)))
-    embed_menu = Mayssage_Menu(title, mayssage_pages, mayssage_file_name)
     await ctx.send(embed=mayssage_box_embed,view=mayssage_box_embed_menu)
