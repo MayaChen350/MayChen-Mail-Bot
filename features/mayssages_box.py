@@ -3,10 +3,6 @@ from discord.ext import commands
 from discord.ui import View, Button
 import os
 
-@commands.hybrid_command()
-async def write(ctx):
-    await ctx.send(f"Welcome to MayChen Mail! Write all your messages you want to send to your destinataire, and use the `send` command to send all your messages. (The limit of messages is 200)")
-
 class Embed_Menu(View):
         def __init__(self, title, messages : list):
             super().__init__()
@@ -41,34 +37,25 @@ class Embed_Menu(View):
             await self.update_embed(interaction)
 
 @commands.hybrid_command()
-async def send(ctx, receiverid : int, title : str):
-    messages_to_send = ""
-    messages = list()
-    async for message in ctx.channel.history(limit=5):
-        if message.author.id == 1250539685567008880:
-            break
-        elif message.author == ctx.author:
-            messages.append(message.content)
+async def check_mayssages(ctx, mayssageid : int):
+    mayssage_file = open("data/" + str(ctx.author.id) + "/" + str(mayssageid), "r")
+    title = mayssage_file.readline()
+    mayssage_content = mayssage_file.read()
+    mayssage_file.close()
 
-    messages.reverse()
-    for msg in messages:
-        messages_to_send += msg + "\n"
+    mayssage_length = len(mayssage_content)
+    mayssage_pages = list()
+    mayssage_index = 0
 
-    message_length = len(messages_to_send)
-    messages.clear()
-    message_index = 0
+    while mayssage_length > 1000:
+        mayssage_pages.append(mayssage_content[mayssage_index:mayssage_index + 1000])
+        mayssage_index += 1000
+        mayssage_length -= 1000
 
-    while message_length > 1000:
-        messages.append(messages_to_send[message_index:message_index + 1000])
-        message_index += 1000
-        message_length -= 1000
-
-    messages.append(messages_to_send[message_index:-1])
-
-    await ctx.send("Your message has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")
+    mayssage_pages.append(mayssage_content[mayssage_index:-1])
 
     embed = discord.Embed()
-
-    embed.add_field(name=title, value=messages[0])
-    embed_menu = Embed_Menu(title, messages)
+    embed.add_field(name=title, value=mayssage_pages[0])
+    embed.set_footer(text= "1/" + str(len(mayssage_pages)))
+    embed_menu = Embed_Menu(title, mayssage_pages)
     await ctx.send(embed=embed,view=embed_menu)

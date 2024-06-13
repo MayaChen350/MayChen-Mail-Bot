@@ -3,8 +3,8 @@ from discord.ext import commands
 import os
 
 @commands.hybrid_command()
-async def send_second_version(ctx, receiverid : int, title : str):
-    mayssage_directory = "data/" + str(receiverid) + "/" + str(ctx.author.id)
+async def send_second_version(ctx, receiverid : str , title : str):
+    mayssage_directory = "data/" + receiverid + "/"
     os.makedirs(name=mayssage_directory, exist_ok=True)
     if not os.path.isfile(mayssage_directory + "/1"):
         open(mayssage_directory + "/1", "x")
@@ -24,7 +24,7 @@ async def send_second_version(ctx, receiverid : int, title : str):
         messages_to_send += msg + "\n"
 
     mayssage_file = open(mayssage_directory + "/" + file_name, "w")
-    mayssage_file.write(title + "\n" + messages_to_send)
+    mayssage_file.write(title + "\n" + ctx.author.display_name + "\n" + messages_to_send)
     mayssage_file.close()
 
-    await ctx.send("Your message has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")
+    await ctx.send("Your mayssage has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")
