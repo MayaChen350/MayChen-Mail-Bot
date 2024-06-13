@@ -5,6 +5,7 @@ import settings
 # from utils import *
 
 #features
+from features.post import *
 
 def run():
     intents = discord.Intents.all()
@@ -25,11 +26,12 @@ def run():
         if isinstance(error,commands.MissingRequiredArgument):
             await ctx.send("Parameters are missing.")
         else:
-            await ctxt.send(error)
+            await ctx.send(error)
 ################################
 # Commands
 ################################             
-   # bot.add_command(send)
+    bot.add_command(write)
+    bot.add_command(send)
    # bot.add_command(check_mayssages)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
