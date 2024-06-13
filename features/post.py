@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ui import View, Button
 import os
+import time
 
 @commands.hybrid_command()
 async def write(ctx):
