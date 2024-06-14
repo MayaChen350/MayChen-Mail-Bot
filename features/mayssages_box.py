@@ -34,6 +34,8 @@ class Mayssage_Box_Menu(View):
         mayssage_file = open(mayssage_file_name, "r")
 
         title = mayssage_file.readline()
+        author = mayssage_file.readline()
+        time = mayssage_file.readline()
         mayssage_content = mayssage_file.read()
 
         mayssage_file.close()
@@ -49,11 +51,10 @@ class Mayssage_Box_Menu(View):
 
         mayssage_pages.append(mayssage_content[mayssage_index:-1])
 
-        new_embed = discord.Embed(title=title, description = mayssage_pages[0])
-        new_embed.set_footer(text= "1/" + str(len(mayssage_pages)))
-        embed_menu = Mayssage_Menu(title, mayssage_pages, mayssage_file_name)
+        new_embed = discord.Embed(title=title, description = mayssage_pages[0], timestamp=datetime.fromtimestamp(int(time)))
+        new_embed.set_footer(text= "Page 1/" + str(len(mayssage_pages)) + "\nBy " + author)
+        embed_menu = Mayssage_Menu(title, mayssage_pages, mayssage_file_name, author, datetime.fromtimestamp(int(time)))
         await interaction.response.edit_message(embed=new_embed,view=embed_menu)
-
 
     @discord.ui.button(style=discord.ButtonStyle.secondary,label="1")
     async def first(self, interaction : discord.Interaction, button : Button):
@@ -81,12 +82,14 @@ class Mayssage_Box_Menu(View):
         await self.update_embed(interaction)
 
 class Mayssage_Menu(View):
-        def __init__(self, title, messages : list, mayssage_file_name : str):
+        def __init__(self, title, messages : list, mayssage_file_name : str, author : str, time : datetime):
             super().__init__()
             self.value = None
             self.title = title
             self.messages = messages
             self.mayssage_file_name = mayssage_file_name
+            self.author = author
+            self.time = time
             self.update_button()
 
         page_index = 0
@@ -95,11 +98,10 @@ class Mayssage_Menu(View):
             self.children[1].disabled = self.page_index + 1 == len(self.messages)
 
         async def update_embed(self, interaction : discord.Interaction):
-            embed = discord.Embed(title=self.title, description=self.messages[self.page_index])
+            embed = discord.Embed(title=self.title, description=self.messages[self.page_index], timestamp=self.time)
             embed.clear_fields()
-            embed.set_footer(text= str(self.page_index + 1) + "/" + str(len(self.messages)))
+            embed.set_footer(text= "Page " + str(self.page_index + 1) + "/" + str(len(self.messages)) + "\nBy " + self.author)
             await interaction.response.edit_message(embed=embed, view=self)
-
 
         @discord.ui.button(style=discord.ButtonStyle.primary,label="Prev")
         async def prev(self, interaction : discord.Interaction, button : Button):

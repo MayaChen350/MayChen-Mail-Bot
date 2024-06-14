@@ -26,7 +26,7 @@ async def send_second_version(ctx, receiverid : str , title : str):
 
     messages.reverse()
     for msg in messages:
-        messages_to_send += msg + "\n"
+        messages_to_send += msg + "\n\n"
 
     mayssage_file = open(mayssage_directory + "/" + file_name, "w")
     mayssage_file.write(title + "\n" + ctx.author.display_name + "\n" + str(math.floor(time.time())) + "\n"  + messages_to_send)
