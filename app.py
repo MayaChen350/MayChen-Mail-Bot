@@ -4,10 +4,10 @@ from discord.ext import commands
 import settings
 # from utils import *
 
-#features
-from features.post import *
-from features.postUpgraded import *
-from features.mayssages_box import *
+#commands
+from commands.write import *
+from commands.send import *
+from commands.check_mayssage import *
 
 def run():
     intents = discord.Intents.all()
@@ -34,7 +34,6 @@ def run():
 ################################             
     bot.add_command(write)
     bot.add_command(send)
-    bot.add_command(send_second_version)
     bot.add_command(check_mayssages)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
