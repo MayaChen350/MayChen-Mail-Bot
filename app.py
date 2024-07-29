@@ -4,10 +4,10 @@ from discord.ext import commands
 import settings
 # from utils import *
 
-#commands
-from commands.write import *
-from commands.send import *
-from commands.check_mayssage import *
+# commands
+from commands.write import write
+from commands.send import send
+from commands.check_mayssage import check_mayssages
 
 def run():
     intents = discord.Intents.all()
@@ -23,12 +23,12 @@ def run():
         await bot.tree.sync()
         print("Bot is ready.")
 
-    @bot.event
-    async def on_command_error(ctx,error):
-        if isinstance(error,commands.MissingRequiredArgument):
-            await ctx.send("Parameters are missing.")
-        else:
-            await ctx.send(error)
+    # @bot.event
+    # async def on_command_error(ctx,error):
+    #     if isinstance(error,commands.MissingRequiredArgument):
+    #         await ctx.send("Parameters are missing.")
+    #     else:
+    #          await ctx.send(error)
 ################################
 # Commands
 ################################             
