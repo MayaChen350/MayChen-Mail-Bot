@@ -2,7 +2,6 @@
 import discord
 from discord.ext import commands
 import settings
-# from utils import *
 
 # commands
 from commands.write import write

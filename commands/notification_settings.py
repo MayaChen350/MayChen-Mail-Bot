@@ -4,9 +4,8 @@ import json
 @commands.hybrid_command(description="Change the setting about the notifications. -1 is for not getting any everyday. ")
 async def notification_settings(ctx, notification_hour : int = -1, new_mayssage_notification : bool = False):
     user_settings = { str(ctx.message.author.id): {
-         "id": str(ctx.message.author.id),
         "notification_time": -1 if notification_hour == -1 else notification_hour % 24,
-        "new_message_notification": new_mayssage_notification
+        "new_mayssage_notification": new_mayssage_notification
     } }
 
     json_content : str = "" # String containing the json

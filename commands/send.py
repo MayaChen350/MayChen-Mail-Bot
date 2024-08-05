@@ -2,6 +2,7 @@ from discord.ext import commands
 import os
 import math
 import time # Exact date and time of the mayssage is stored in UNIX format
+import json
 
 from components.Mayssage import Mayssage
 
@@ -45,6 +46,20 @@ async def send(ctx, receiverid : str , title : str):
     mayssage_file = open(mayssage_directory + "/" + file_name, "w")
     mayssage_file.write(str(mayssage))
     mayssage_file.close()
+
+    # Notify the receiver if they have their Mayssage notification on
+    try:
+        user_settings_file = open("data/user_settings.json", "r")
+    except FileNotFoundError:
+        pass
+    else:
+        user_settings = json.loads(user_settings_file.read())
+        user_settings_file.close()
+        
+        if (user_settings[receiverid] != None and user_settings[receiverid]["new_mayssage_notification"]):
+            receiver = await ctx.message.guild.fetch_member(receiverid)
+            await receiver.send("You received a new Mayssage!")
+
 
     await ctx.send("Your mayssage has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")
     print(str(ctx.author.id) + " sent a message to " + receiverid + "!") # personal logs hehe
