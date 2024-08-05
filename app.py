@@ -14,7 +14,7 @@ def run():
     intents.message_content = True
     bot = commands.Bot(command_prefix="!", intents=intents)
 
-################################
+################################``
 # BASE                        
 ################################
     @bot.event

@@ -9,15 +9,17 @@ class Mayssage:
         if file != "":
             mayssage_file = open(file, "r")
 
-            self.title = mayssage_file.readline()
-            self.author_name = mayssage_file.readline()
-            self.time = float(mayssage_file.readline())
+            self.read = mayssage_file.readline().strip("\n") == 'R'
+            self.title = mayssage_file.readline().strip("\n")
+            self.author_name = mayssage_file.readline().strip("\n")
+            self.time = float(mayssage_file.readline().strip("\n"))
 
             self.mayssage_content = mayssage_file.read()
 
             mayssage_file.close()
         # Otherwise use the included parameters
         else:
+            self.read = False
             self.title = title
             self.author_name = author_name
             self.time = time
@@ -45,4 +47,4 @@ class Mayssage:
 
     # toString override
     def __str__(self) -> str:
-        return self.title + "\n" + self.author_name + "\n" + str(math.floor(self.time)) + "\n"  + self.mayssage_content
+        return ("R\n" if self.read else "\n") + self.title + "\n" + self.author_name + "\n" + str(math.floor(self.time)) + "\n"  + self.mayssage_content

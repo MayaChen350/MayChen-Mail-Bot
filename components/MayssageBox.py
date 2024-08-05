@@ -46,7 +46,7 @@ class MayssageBox(View):
         # Display the Mayssage infos in the splitted (3 each pages) list of Mayssage
         for mayssageid in self.mayssage_box_pages[self.page_index]:
             mayssage = Mayssage(file = self.mayssage_box_dir + "/" + mayssageid) # Instantiate a Mayssage object by reading a Mayssage file
-            self.embed.add_field(name=mayssage.title, value=(mayssage.author_name + " \- <t:" + str(math.floor(mayssage.time)) + ":R>").replace("\n", ""))
+            self.embed.add_field(name=("( NEW ) " if not mayssage.read else "" ) + mayssage.title, value=(mayssage.author_name + " - <t:" + str(math.floor(mayssage.time)) + ":R>").replace("\n", ""))
 
         # Set the footer
         self.embed.set_footer(text= "Page " + str(self.page_index + 1) + "/" + str(len(self.mayssage_box_pages)) + "\nMayaChen Mail")
@@ -68,6 +68,13 @@ class MayssageBox(View):
         # Instantiate a Mayssage object by reading a Mayssage file
         mayssage_file_name = self.mayssage_box_dir + "/" + str(mayssageid)
         mayssage_to_read = Mayssage(mayssage_file_name)
+
+        # Mark the Mayssage as "read" in its file
+        if mayssage_to_read.read == False:
+            mayssage_to_read.read = True
+            mayssage_file = open(mayssage_file_name, "w")
+            mayssage_file.write(str(mayssage_to_read))
+            mayssage_file.close()
 
         mayssage_pages = mayssage_to_read.split_content_in_pages() # Split the content of the Mayssage in page of less than 1000 characters
 
