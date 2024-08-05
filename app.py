@@ -8,6 +8,7 @@ import settings
 from commands.write import write
 from commands.send import send
 from commands.check_mayssage import check_mayssages
+from commands.notification_settings import notification_settings
 
 def run():
     intents = discord.Intents.all()
@@ -35,6 +36,7 @@ def run():
     bot.add_command(write)
     bot.add_command(send)
     bot.add_command(check_mayssages)
+    bot.add_command(notification_settings)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 
