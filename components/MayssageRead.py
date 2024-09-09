@@ -1,4 +1,3 @@
-import time
 import discord
 from discord.ui import View, Button
 from datetime import datetime

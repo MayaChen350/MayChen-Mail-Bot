@@ -40,7 +40,7 @@ async def send(ctx, receiverid : str , title : str):
     # Create a Mayssage instance with the title of the mayssage specified when done the command,
     # the above list of messages
     # and the current time and day (in UNIX format)
-    mayssage = Mayssage("", title, messages, ctx.author.display_name, math.floor(time.time()))
+    mayssage = Mayssage("", title, messages, ctx.author.name, math.floor(time.time()))
 
     # Write the mayssage in a text file in the good directory
     mayssage_file = open(mayssage_directory + "/" + file_name, "w")
@@ -56,9 +56,9 @@ async def send(ctx, receiverid : str , title : str):
         user_settings = json.loads(user_settings_file.read())
         user_settings_file.close()
         
-        if (user_settings[receiverid] != None and user_settings[receiverid]["new_mayssage_notification"]):
-            receiver = await ctx.message.guild.fetch_member(receiverid)
-            await receiver.send("You received a new Mayssage!")
+        # if (user_settings[receiverid] != None and user_settings[receiverid]["new_mayssage_notification"]):
+        #     receiver = await ctx.message.guild.fetch_member(receiverid)
+        #     await receiver.send("You received a new Mayssage!")
 
 
     await ctx.send("Your mayssage has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")

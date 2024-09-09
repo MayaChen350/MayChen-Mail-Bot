@@ -1,7 +1,5 @@
 import math
-import time
 
-from datetime import datetime
 
 class Mayssage:
     def __init__(self, file : str = "", title : str = "", messages : list = list, author_name : str = "", time : float = 0):

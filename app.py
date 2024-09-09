@@ -23,19 +23,19 @@ def run():
         await bot.tree.sync()
         print("Bot is ready.")
 
-    # @bot.event
-    # async def on_command_error(ctx,error):
-    #     if isinstance(error,commands.MissingRequiredArgument):
-    #         await ctx.send("Parameters are missing.")
-    #     else:
-    #          await ctx.send(error)
+    @bot.event
+    async def on_command_error(ctx,error):
+        if isinstance(error,commands.MissingRequiredArgument):
+            await ctx.send("Parameters are missing.")
+        else:
+            await ctx.send(error)
 ################################
 # Commands
 ################################             
     bot.add_command(write)
     bot.add_command(send)
     bot.add_command(check_mayssages)
-    bot.add_command(notification_settings)
+    ## bot.add_command(notification_settings)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 
