@@ -4,13 +4,13 @@ import math
 import time # Exact date and time of the mayssage is stored in UNIX format
 import json
 
-from components.Mayssage import Mayssage
+from components.data.Mayssage import Mayssage
 
-# When this command is used, all messages of the user who did the command starting to the first message the user sent
-# after the last message the bot sent
-# will be saved in a mayssage_file in the local directory of the receiver (with for name the receiver id)
 @commands.hybrid_command()
 async def send(ctx, receiverid : str , title : str):
+    """When this command is used, all messages of the user who did the command starting to the first message the user sent
+    after the last message the bot sent
+    will be saved in a mayssage_file in the local directory of the receiver (with for name the receiver id)"""
     if not receiverid.isdigit():
         raise Exception("The receiverid must have digits only. (Try copying the User ID of the person you want to send the mayssage to.)")
 

@@ -5,26 +5,30 @@ import discord
 from discord.ui import View, Button
 from datetime import datetime
 
-from .MayssageRead import MayssageRead
-from .Mayssage import Mayssage
+from .MayssageReader import MayssageReader
+from ..data.Mayssage import Mayssage
 
 class MayssageBox(View):
+    """UI displaying the Mayssages"""
     def __init__(self, context):
         super().__init__()
         # self.value = None # I saw this line in a yt video idk if it really changes smth
-        self.embed = discord.Embed() # embed with the menu
-        self.context = context # ctx
+        self.embed = discord.Embed() 
+        """Embed with the menu"""
+        self.context = context
+        """ctx"""
         
-        # (Calculated)
-        # The user directory with the Mayssages 
         self.mayssage_box_dir = "data/" + str(context.author.id)
+        """(Calculated)\n
+        The user directory with the Mayssages """
 
         # List the Mayssage files of the directory
         # from the most recent to the oldest
         list_dir = os.listdir(self.mayssage_box_dir)
         list_dir.sort(reverse=True)
 
-        self.mayssage_box_pages : list[list[str]] = list() # splitted list of Mayssages
+        self.mayssage_box_pages : list[list[str]] = list()
+        """Splitted list of Mayssages"""
 
         # Split all the Mayssage list
         # A "page" displays 3 Mayssages at once
@@ -38,6 +42,7 @@ class MayssageBox(View):
         self.update_button()
     
     def set_embed(self):
+        """Set the embed with displaying the Mayssages"""
         self.embed.timestamp = datetime.fromtimestamp(time.time()) # UNIX timestamp of the message
         self.embed.set_author(name=self.context.author.display_name + "'s Mayssage box") # Maysssage Box's owner
         
@@ -51,20 +56,21 @@ class MayssageBox(View):
         # Set the footer
         self.embed.set_footer(text= "Page " + str(self.page_index + 1) + "/" + str(len(self.mayssage_box_pages)) + "\nMayaChen Mail")
 
-    # Depending of the page index, enable or disable the buttons
     def update_button(self):
+        """Depending of the page index, enable or disable the buttons"""
         self.children[1].disabled = len(self.mayssage_box_pages[self.page_index]) < 2
         self.children[2].disabled = len(self.mayssage_box_pages[self.page_index]) < 3
         self.children[3].disabled = self.page_index == 0
         self.children[4].disabled = self.page_index + 1 == len(self.mayssage_box_pages)
 
-    # Update the embed from the message on discord
     async def update_embed(self, interaction : discord.Interaction):
+        """Update the embed from the message on discord"""
         self.set_embed()
         await interaction.response.edit_message(embed=self.embed, view=self)
 
-    # Read a message from a file (Also switch to display a MayssageReadMenu instance)
     async def read_mayssage(self, interaction : discord.Interaction, mayssageid : int):
+        """Read a message from a file (Also switch to display a MayssageReadMenu instance)"""
+
         # Instantiate a Mayssage object by reading a Mayssage file
         mayssage_file_name = self.mayssage_box_dir + "/" + str(mayssageid)
         mayssage_to_read = Mayssage(mayssage_file_name)
@@ -72,14 +78,9 @@ class MayssageBox(View):
         # Mark the Mayssage as "read" in its file
         if mayssage_to_read.read == False:
             mayssage_to_read.read = True
-            mayssage_file = open(mayssage_file_name, "w")
-            mayssage_file.write(str(mayssage_to_read))
-            mayssage_file.close()
-
-        mayssage_pages = mayssage_to_read.split_content_in_pages() # Split the content of the Mayssage in page of less than 1000 characters
 
         # Switch to a MayssageReadMenu
-        new_ui = MayssageRead(mayssage_file_name, mayssage_to_read)
+        new_ui = MayssageReader(mayssage_file_name, mayssage_to_read)
         # Update the embed from the message on discord
         await interaction.response.edit_message(embed=new_ui.embed,view=new_ui)
 

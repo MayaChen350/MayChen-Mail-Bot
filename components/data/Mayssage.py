@@ -3,9 +3,10 @@ import math
 
 class Mayssage:
     def __init__(self, file : str = "", title : str = "", messages : list = list, author_name : str = "", time : float = 0):
+        self.file_name = file
         # If the file argument is included and not null, initialized the object from the lines in the file
-        if file != "":
-            mayssage_file = open(file, "r")
+        if self.file_name != "":
+            mayssage_file = open(self.file_name, "r")
 
             self.read = mayssage_file.readline().strip("\n") == 'R'
             self.title = mayssage_file.readline().strip("\n")
@@ -17,7 +18,7 @@ class Mayssage:
             mayssage_file.close()
         # Otherwise use the included parameters
         else:
-            self.read = False
+            self._read = False
             self.title = title
             self.author_name = author_name
             self.time = time
@@ -25,10 +26,25 @@ class Mayssage:
             self.mayssage_content = ""
             for msg in messages:
                 self.mayssage_content += msg + "\n\n"
+
+    def get_read(self):
+        return self._read
+    
+    def set_read(self, value: bool):
+        if (value == True):
+            self._read = False
+            mayssage_file = open(self.file_name, "w")
+            mayssage_file.write(str(self.file_name))
+            mayssage_file.close()
+        else:
+            ValueError("The read value can only be set to True.")
+
+    read = property(fget=get_read,fset=set_read)
+
             
-    # Split the content in strings of less than 1000
-    # Return a list of them
     def split_content_in_pages(self) -> list[str]:
+        """Split the content in strings of less than 1000\n
+        Return a list of them"""
         mayssage_length = len(self.mayssage_content)
         mayssage_pages : list[str] = []
         mayssage_index = 0

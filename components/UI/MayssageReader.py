@@ -3,9 +3,10 @@ from discord.ui import View, Button
 from datetime import datetime
 
 from .DeleteButton import DeleteButton
-from .Mayssage import Mayssage
+from ..data.Mayssage import Mayssage
 
-class MayssageRead(View):
+class MayssageReader(View):
+        """UI that shows up when you click to read a Mayssage"""
         def __init__(self, mayssage_file_name : str, mayssage: Mayssage):
             super().__init__()
             # self.value = None # idk if it's useful
@@ -16,10 +17,12 @@ class MayssageRead(View):
             self.author = mayssage.author_name
             self.time : float = mayssage.time
 
-            # Pages of the Mayssage (>1000 Characters each)
-            self.mayssage_pages = mayssage.split_content_in_pages()
-            # Index for the current page
-            self.page_index = 0
+            self.mayssage_pages : list[str] = mayssage.split_content_in_pages()
+            """Pages of the Mayssage\n
+            (>1000 Characters each)"""
+            
+            self.page_index : int = 0
+            """Index for the current page"""
 
             self.embed = discord.Embed()
 
@@ -27,19 +30,19 @@ class MayssageRead(View):
             self.set_embed()
             self.update_button()
 
-        # Set the embed with the informations of the Mayssage
         def set_embed(self):
+            """Set the embed with the informations of the Mayssage"""
             self.embed = discord.Embed(title=self.title, description=self.mayssage_pages[self.page_index], timestamp=datetime.fromtimestamp(self.time))
             self.embed.clear_fields()
             self.embed.set_footer(text= "Page " + str(self.page_index + 1) + "/" + str(len(self.mayssage_pages)) + "\nBy " + self.author)
 
-        # Depending of the page index, enable or disable the buttons
         def update_button(self):
+            """Depending of the page index, enable or disable the buttons"""
             self.children[0].disabled = self.page_index == 0
             self.children[1].disabled = self.page_index + 1 == len(self.mayssage_pages)
 
-        # Update the embed from the message on discord
         async def update_embed(self, interaction : discord.Interaction):
+            """Update the embed from the message on discord"""
             self.set_embed()
             await interaction.response.edit_message(embed=self.embed, view=self)
 

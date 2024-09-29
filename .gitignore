@@ -162,4 +162,4 @@ cython_debug/
 .vscode/
 *.swp
 # Where mayssages are
-data/
+/data/
