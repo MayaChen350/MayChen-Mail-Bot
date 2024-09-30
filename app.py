@@ -14,7 +14,7 @@ def run():
     intents.message_content = True
     bot = commands.Bot(command_prefix="!", intents=intents)
 
-################################``
+################################
 # BASE                        
 ################################
     @bot.event
@@ -23,12 +23,12 @@ def run():
         await bot.tree.sync()
         print("Bot is ready.")
 
-    @bot.event
-    async def on_command_error(ctx,error):
-        if isinstance(error,commands.MissingRequiredArgument):
-            await ctx.send("Parameters are missing.")
-        else:
-            await ctx.send(error)
+    # @bot.event
+    # async def on_command_error(ctx,error : commands.CommandError):
+    #     if isinstance(error,commands.MissingRequiredArgument):
+    #         await ctx.send("Parameters are missing.")
+    #     else:
+    #         await ctx.send(error)
 ################################
 # Commands
 ################################             
