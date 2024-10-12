@@ -40,8 +40,6 @@ async def send(ctx, receiverid : str , title : str):
 
     messages.reverse() # Reverse the order of the list to have the oldest messages first (chronological order)
 
-    messages = [("a" * 1001)]
-
     # Create a Mayssage instance with the title of the mayssage specified when done the command,
     # the above list of messages
     # and the current time and day (in UNIX format)

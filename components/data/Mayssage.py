@@ -45,38 +45,28 @@ class Mayssage:
         """Split the content in strings of less than 1000\n
         Return a list of them"""
 
-        remaining_mayssage_length: int = len(self.mayssage_content)
+        mayssage_length: int = len(self.mayssage_content)
         mayssage_pages : list[str] = []
         mayssage_index: int = 0
 
         wordLength : int = 0
-        canCut : bool = True
 
-        while remaining_mayssage_length > 1000:
-            old_mayssage_index = mayssage_index
-            if canCut:
-                if self.mayssage_content[mayssage_index + 1000] == ' ':
-                    mayssage_pages.append(self.mayssage_content[mayssage_index:mayssage_index + 1000])
-                    mayssage_index += 1000
-                    remaining_mayssage_length -= 1000
-                elif wordLength == 1000:
-                    mayssage_pages.append(self.mayssage_content[mayssage_index + 1000:mayssage_index + 2000])
-                    mayssage_index += 2000
-                    canCut = False
-                else:
-                    wordLength += 1
-                    mayssage_index -= 1
-            else:
-                mayssage_index += 1
-                wordLength += 1
-                if wordLength % 1000 == 0:
-                    mayssage_pages.append(self.mayssage_content[mayssage_index - 1000:mayssage_index])
-                elif self.mayssage_content[mayssage_index] == ' ':
-                    wordLength = 0
-                    canCut = True
-            remaining_mayssage_length -= mayssage_index - old_mayssage_index
+        def offset(): 
+            return 1000 - wordLength
 
-        mayssage_pages.append(self.mayssage_content[mayssage_index:-1])
+        while mayssage_length - mayssage_index > 1000: 
+            if self.mayssage_content[mayssage_index + offset()] == ' ': # If it finds a space after 1000 characters after the current index
+                mayssage_pages.append(self.mayssage_content[mayssage_index:mayssage_index + offset()]) # Add the characters in a page
+                mayssage_index += offset() # Increase the index
+                wordLength = 0 # Reset the recorded length of the current word
+            elif wordLength == 1000: # If the recorded length of the word without a space is 1000
+                mayssage_pages.append(self.mayssage_content[mayssage_index:mayssage_index + 1000]) # append the first 1000 characters of the more than 1k chars word
+                mayssage_index += 1000 # Increment the index at the end of the 1000 characters word
+                wordLength = 0
+            else: # If it didn't find a space nor the word was 1000+ characters long
+                wordLength += 1 # Increment the length of the current word
+
+        mayssage_pages.append(self.mayssage_content[mayssage_index:mayssage_length])
 
         return mayssage_pages
 
