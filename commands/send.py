@@ -1,4 +1,5 @@
 from discord.ext import commands
+import settings
 import os
 import math
 import time # Exact date and time of the mayssage is stored in UNIX format
@@ -35,8 +36,6 @@ async def send(ctx, receiverid : str , title : str):
 
     if "".join(messages) == "":
        raise commands.UserInputError("You can't send an empty Mayssage.")
-    
-    print("".join(messages))
 
     messages.reverse() # Reverse the order of the list to have the oldest messages first (chronological order)
 
@@ -56,13 +55,13 @@ async def send(ctx, receiverid : str , title : str):
     except FileNotFoundError:
         pass
     else:
-        user_settings = json.loads(user_settings_file.read())
+        user_settings : dict = json.loads(user_settings_file.read())
         user_settings_file.close()
         
-        # if (user_settings[receiverid] != None and user_settings[receiverid]["new_mayssage_notification"]):
-        #     receiver = await ctx.message.guild.fetch_member(receiverid)
-        #     await receiver.send("You received a new Mayssage!")
-
+        if user_settings.get(receiverid) != None:
+            if user_settings[receiverid]["new_mayssage_notification"]:
+                receiver = await settings.bot.fetch_user(receiverid)
+                await receiver.send("You received a new Mayssage!")
 
     await ctx.send("Your mayssage has been sent! They can read it with the `check_mayssages` command! Thank you for using MayChen Mail.")
     print(str(ctx.author.id) + " sent a message to " + receiverid + "!") # personal logs hehe

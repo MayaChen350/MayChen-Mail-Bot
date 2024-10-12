@@ -1,5 +1,4 @@
 # base files
-import discord
 from discord.ext import commands
 import settings
 
@@ -10,9 +9,7 @@ from commands.check_mayssage import check_mayssages
 from commands.notification_settings import notification_settings
 
 def run():
-    intents = discord.Intents.all()
-    intents.message_content = True
-    bot = commands.Bot(command_prefix="!", intents=intents)
+    bot : commands.Bot = settings.bot
 
 ################################
 # BASE                        
@@ -23,12 +20,12 @@ def run():
         await bot.tree.sync()
         print("Bot is ready.")
 
-    # @bot.event
-    # async def on_command_error(ctx,error : commands.CommandError):
-    #     if isinstance(error,commands.MissingRequiredArgument):
-    #         await ctx.send("Parameters are missing.")
-    #     else:
-    #         await ctx.send(error)
+    @bot.event
+    async def on_command_error(ctx,error : commands.CommandError):
+        if isinstance(error,commands.MissingRequiredArgument):
+            await ctx.send("Parameters are missing.")
+        else:
+            await ctx.send(error)
 ################################
 # Commands
 ################################             
