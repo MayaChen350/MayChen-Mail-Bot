@@ -7,7 +7,7 @@ from ..data.Mayssage import Mayssage
 
 class MayssageReader(View):
         """UI that shows up when you click to read a Mayssage"""
-        def __init__(self, mayssage_file_name : str, mayssage: Mayssage):
+        def __init__(self, mayssage_file_name : str, mayssage: Mayssage, mayssage_box : any):
             super().__init__()
             # self.value = None # idk if it's useful
 
@@ -25,6 +25,8 @@ class MayssageReader(View):
             """Index for the current page"""
 
             self.embed = discord.Embed()
+
+            self.mayssage_box = mayssage_box
 
             # Set the embed and set the menu buttons
             self.set_embed()
@@ -68,3 +70,8 @@ class MayssageReader(View):
             view_del = View(timeout=60.0)
             view_del.add_item(DeleteButton(style=discord.ButtonStyle.danger,label="Delete from Maya's computer", mayssage_file_name = self.mayssage_file_name))
             await interaction.response.send_message(content="Are you sure you want to delete this Mayssage?", view=view_del)
+
+        # This button makes you go back to the mayssage_box
+        @discord.ui.button(style=discord.ButtonStyle.secondary,label="Back to Mayssage box")
+        async def go_back(self, interaction : discord.Interaction, button : Button):
+            await interaction.response.edit_message(embed=self.mayssage_box.embed,view=self.mayssage_box)

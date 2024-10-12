@@ -78,9 +78,11 @@ class MayssageBox(View):
         # Mark the Mayssage as "read" in its file
         if mayssage_to_read.read == False:
             mayssage_to_read.read = True
+        
+        self.set_embed()
 
         # Switch to a MayssageReadMenu
-        new_ui = MayssageReader(mayssage_file_name, mayssage_to_read)
+        new_ui = MayssageReader(mayssage_file_name, mayssage_to_read, self)
         # Update the embed from the message on discord
         await interaction.response.edit_message(embed=new_ui.embed,view=new_ui)
 
