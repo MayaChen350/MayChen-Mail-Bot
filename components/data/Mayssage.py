@@ -31,7 +31,7 @@ class Mayssage:
     
     def set_read(self, value: bool):
         if (value == True):
-            self._read = False
+            self._read = True
             mayssage_file = open(self.file_name, "w")
             mayssage_file.write(str(self))
             mayssage_file.close()
