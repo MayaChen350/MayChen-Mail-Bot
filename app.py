@@ -32,7 +32,7 @@ def run():
     bot.add_command(write)
     bot.add_command(send)
     bot.add_command(check_mayssages)
-    ## bot.add_command(notification_settings)
+    bot.add_command(notification_settings)
 ################################
     bot.run(settings.DISCORD_API_SECRET, root_logger=True)
 
